@@ -4,247 +4,431 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <title>P1 – Wanter – Spiller</title>
-
 <style>
-@font-face{
-  font-family:'Schoulschrëft';
-  src:url('https://raw.githubusercontent.com/albrechtclaire1007/schoulschreft/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
-  font-weight:bold;
-}
+  /* Font */
+  @font-face{
+    font-family:'Schoulschrëft';
+    src:url('https://raw.githubusercontent.com/albrechtclaire1007/schoulschreft/main/schoulschreft_bold%5B2%5D.TTF') format('truetype');
+    font-weight:bold; font-style:normal; font-display:swap;
+  }
 
-:root{
-  --pink-mid:#e4b7d0;
-  --pink-light:#f6e4ee;
-  --pink-dark:#d88cb8;
-  --ink:#1f1f1f;
-  --ok:#b7f0c8;
-  --bad:#ffcccc;
-}
+  :root{
+    --pink-mid:#e4b7d0; --pink-light:#f6e4ee; --pink-dark:#d88cb8;
+    --ink:#1f1f1f; --white:#fff; --bad:#ffcccc; --ok:#b7f0c8;
+    --border:3px;
+  }
 
-*{box-sizing:border-box;user-select:none;}
-html,body{
-  margin:0;height:100%;
-  background:linear-gradient(135deg,var(--pink-mid),var(--pink-light));
-  font-family:'Schoulschrëft',Arial,sans-serif;
-}
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; outline:none;}
+  html,body{
+    height:100%; margin:0;
+    background:linear-gradient(135deg,var(--pink-mid),var(--pink-light));
+    color:var(--ink);
+    font-family:'Schoulschrëft', Arial, sans-serif;
+  }
 
-.top{
-  position:sticky;top:8px;
-  display:flex;gap:12px;justify-content:center;
-  background:white;border:3px solid var(--pink-dark);
-  border-radius:18px;padding:.4rem .8rem;
-  margin:10px auto;width:fit-content;
-}
+  /* Top bar with arrows */
+  .top{
+    position:sticky; top:8px; z-index:10; display:flex; gap:12px; align-items:center; justify-content:center;
+    background:var(--white); border:var(--border) solid var(--pink-dark); border-radius:18px;
+    padding:.35rem .8rem; margin:10px auto; width:fit-content;
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
+  }
+  .iconBtn{
+    border:var(--border) solid var(--ink); background:var(--white); color:var(--ink);
+    padding:.25rem .7rem; border-radius:14px; cursor:pointer; font-size:1.4rem; line-height:1;
+    min-width:2.4rem; display:grid; place-items:center;
+    font-family:'Schoulschrëft', Arial, sans-serif;
+  }
+  .iconBtn:active{ transform:scale(.98); }
+  .flow{opacity:.9; font-size:1rem; padding:0 .4rem; min-width:8ch; text-align:center;}
+  .hidden{display:none !important;}
 
-.iconBtn{
-  border:3px solid var(--ink);
-  background:white;border-radius:14px;
-  font-size:1.4rem;cursor:pointer;
-}
+  .wrap{
+    min-height:100%; display:flex; flex-direction:column; align-items:center;
+    gap:2.5vmin; padding:2.5vmin 3vmin 4vmin;
+  }
+  h1{
+    margin:.2rem 0 0; text-align:center;
+    font-size:clamp(2rem,6vmin,4.2rem); color:var(--ink);
+  }
 
-.hidden{display:none;}
+  /* Generic grids / tokens */
+  .grid{
+    width:95vw; max-width:2000px; display:grid; gap:2vmin;
+    grid-template-columns: repeat(auto-fill, minmax(14vmin, 1fr));
+    align-items:stretch;
+  }
+  .imgToken{
+    background:var(--white); border:6px solid var(--pink-mid); border-radius:22px;
+    display:grid; place-items:center; aspect-ratio:1/1; cursor:pointer;
+    transition:transform .1s ease, border-color .15s ease, filter .15s ease, background .15s ease;
+    box-shadow:0 10px 26px rgba(0,0,0,.08);
+  }
+  .imgToken:active{ transform:scale(.97); }
+  .imgToken img{ width:90%; height:90%; object-fit:contain; }
 
-.wrap{
-  min-height:100%;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:2rem;
-  padding:2rem;
-}
+  .btn{
+    border:var(--border) solid var(--ink); background:var(--white); color:var(--ink);
+    padding:.45rem .85rem; border-radius:14px; cursor:pointer; font-size:1.05rem;
+    font-family:'Schoulschrëft', Arial, sans-serif;
+  }
+  .btn:active{ transform:scale(.98); }
 
-h1{text-align:center;font-size:clamp(2rem,6vmin,4rem);}
+  .flash-good{ background:var(--ok) !important; border-color:var(--ok) !important; }
+  .flash-bad{ background:var(--bad) !important; border-color:var(--bad) !important; }
+  .selected{ border-color:var(--pink-dark) !important; }
 
-.grid{
-  width:95vw;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-  gap:1.5rem;
-}
+  /* Big square */
+  .bigSquare{
+    width:min(70vmin,90%); aspect-ratio:1/1; background:#fff;
+    border:12px solid var(--pink-mid); border-radius:40px; display:grid; place-items:center;
+    position:relative; cursor:pointer;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    transition:transform .12s ease;
+  }
+  .bigSquare:active{ transform:scale(.98); }
+  .bigSquare img{ width:85%; height:85%; object-fit:contain; }
+  .reset{
+    position:absolute; top:14px; right:18px; width:48px; height:48px; border-radius:50%;
+    background:#fff; border:4px solid var(--pink-mid); display:grid; place-items:center;
+    font-size:1.4rem; line-height:1; cursor:pointer;
+  }
+  .fade{ animation:fadeIn .35s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:scale(.9)} to{opacity:1; transform:scale(1)} }
 
-.imgToken{
-  background:white;
-  border:6px solid var(--pink-mid);
-  border-radius:22px;
-  aspect-ratio:1/1;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-}
-.imgToken img{width:85%;height:85%;object-fit:contain;}
+  /* Memory */
+  .memGrid{
+    width:95vw; max-width:1200px;
+    display:grid; gap:1.6vmin;
+    grid-template-columns: repeat(auto-fill, minmax(24vmin, 1fr));
+  }
+  .card{ aspect-ratio:5/3; perspective:1000px; cursor:pointer; }
+  .inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .25s ease; }
+  .flipped .inner{ transform:rotateY(180deg); }
+  .face{
+    position:absolute; inset:0; border-radius:18px; border:6px solid var(--pink-mid);
+    backface-visibility:hidden; display:grid; place-items:center; background:#fff;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+  }
+  .front{
+    background:#fff url('https://i.postimg.cc/ZKkYXy7g/cardback-p1-game.png') center/70% no-repeat;
+  }
+  .back{ transform:rotateY(180deg); }
+  .sndWord{
+    font-size:clamp(1.1rem,3.3vmin,1.7rem);
+    padding:.2rem .4rem;
+    text-align:center;
+    width:92%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1.2;
+  }
 
-.flash-good{background:var(--ok)!important;}
-.flash-bad{background:var(--bad)!important;}
-
-.bigSquare{
-  width:min(70vmin,90%);
-  aspect-ratio:1/1;
-  background:white;
-  border:12px solid var(--pink-mid);
-  border-radius:40px;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-}
-.bigSquare img{width:85%;height:85%;object-fit:contain;}
-
-.memGrid{
-  width:95vw;
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-  gap:1rem;
-}
-
-.card{aspect-ratio:5/3;perspective:1000px;cursor:pointer;}
-.inner{width:100%;height:100%;transition:.3s;transform-style:preserve-3d;}
-.flipped .inner{transform:rotateY(180deg);}
-.face{
-  position:absolute;inset:0;
-  background:white;
-  border:6px solid var(--pink-mid);
-  border-radius:18px;
-  display:grid;place-items:center;
-  backface-visibility:hidden;
-}
-.back{transform:rotateY(180deg);}
-
-.inlineSq{
-  width:min(36vmin,400px);
-  aspect-ratio:1/1;
-  background:white;
-  border:10px solid var(--pink-mid);
-  border-radius:28px;
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-}
+  /* Game 4 – sentence */
+  .sentence{
+    display:flex; align-items:center; gap:min(2.2vmin,16px);
+    flex-wrap:wrap; justify-content:center;
+    font-size:clamp(2rem,4.8vw,3.2rem);
+  }
+  .inlineSq{
+    display:inline-grid; place-items:center; width:min(36vmin,420px); aspect-ratio:1/1;
+    border:10px solid var(--pink-mid); border-radius:28px; background:#fff; cursor:pointer;
+    box-shadow:0 8px 24px rgba(0,0,0,.08); transition:transform .12s ease;
+  }
 </style>
 </head>
-
 <body>
 
+<!-- Top nav -->
 <div class="top">
   <button class="iconBtn" id="prev">◀</button>
-  <span id="flowLabel">1. Spill</span>
+  <span class="flow" id="flowLabel">1. Spill</span>
   <button class="iconBtn" id="next">▶</button>
 </div>
 
+<!-- Spill 1: Lauschter a klick op dat richtegt Bild -->
 <section class="wrap" id="g1">
   <h1>Lauschter a klick op dat richtegt Bild</h1>
   <div class="grid" id="grid1"></div>
+  <div><button class="btn" id="play1">Toun nach eng Kéier</button></div>
 </section>
 
+<!-- Spill 2: Memory (Bild – Toun) -->
 <section class="wrap hidden" id="g2">
   <h1>Memory: Bild – Toun</h1>
   <div class="memGrid" id="memGrid"></div>
+  <div><button class="btn" id="memReset">Nei mëschen</button></div>
 </section>
 
+<!-- Spill 3: Kuck a so wat et ass -->
 <section class="wrap hidden" id="g3">
   <h1>Kuck a so wat et ass</h1>
-  <div class="bigSquare" id="bigSq"><img id="bigImg"></div>
+  <div class="bigSquare" id="bigSq">
+    <img id="bigImg" alt="">
+    <button class="reset" id="bigReset" title="Nei ufänken">↻</button>
+  </div>
+  <div><button class="btn" id="sayPlay">Toun spillen</button></div>
 </section>
 
+<!-- Spill 4: Dat ass … (Bild + Toun) -->
 <section class="wrap hidden" id="g4">
   <h1>Dat ass …</h1>
-  <div class="inlineSq" id="nounSq"><img id="nounImg"></div>
+  <div class="sentence">
+    <span>Dat ass</span>
+    <div class="inlineSq" id="nounSq">
+      <img id="nounImg" alt="" style="width:85%; height:85%; object-fit:contain">
+    </div>
+  </div>
+  <p>Klick op d'Bild: Lauschter a schwätz mat.</p>
 </section>
 
-<audio id="speaker"></audio>
+<audio id="speaker" preload="auto"></audio>
 
 <script>
+/* ---------- DATA (WANTER) ---------- */
 const AUDIO = "https://github.com/albrechtclaire1007/p1wanter/raw/refs/heads/main";
 
 const ITEMS = [
-  {id:'et-ass-kal',word:'Et ass kal',img:'https://i.postimg.cc/dkjvL74X/et-ass-kal.png',audio:`${AUDIO}/et_ass_kal.mp3`},
-  {id:'reen',word:'Reen',img:'https://i.postimg.cc/06m91XS0/reen.png',audio:`${AUDIO}/reen.mp3`},
-  {id:'schlittschung',word:'Schlittschung',img:'https://i.postimg.cc/Lhm2GTsF/schlittschung.png',audio:`${AUDIO}/schlittschung.mp3`},
-  {id:'schlittschung-fueren',word:'Schlittschung fueren',img:'https://i.postimg.cc/sGfzSVNK/schlittschung-fueren.png',audio:`${AUDIO}/schlittschung_fueren.mp3`},
-  {id:'schlitt',word:'Schlitt',img:'https://i.postimg.cc/MMmxvcds/schlitt.png',audio:`${AUDIO}/schlitt.mp3`},
-  {id:'schlitt-fueren',word:'Schlitt fueren',img:'https://i.postimg.cc/wRxzJ6GW/schlitt-fueren.png',audio:`${AUDIO}/schlitt_fueren.mp3`},
-  {id:'schnei',word:'Schnéi',img:'https://i.postimg.cc/5jfbD32K/schnei.png',audio:`${AUDIO}/schnéi.mp3`},
-  {id:'schneiflack',word:'Schnéiflack',img:'https://i.postimg.cc/w3FgzmtK/schneiflack.png',audio:`${AUDIO}/schnéiflack.mp3`},
-  {id:'schneimannchen',word:'Schnéimännchen',img:'https://i.postimg.cc/w3Fgzmt8/schneimannchen.png',audio:`${AUDIO}/schnéimännchen.mp3`},
-  {id:'schneimannchen-bauen',word:'Schnéimännchen bauen',img:'https://i.postimg.cc/mPPb8ggc/e-schneimannche-bauen.png',audio:`${AUDIO}/schneimännchen_bauen.mp3`},
-  {id:'schi',word:'Schi',img:'https://i.postimg.cc/FfchXCS0/schi.png',audio:`${AUDIO}/schi.mp3`},
-  {id:'schi-fueren',word:'Schi fueren',img:'https://i.postimg.cc/QB5jZY53/schi-fueren.png',audio:`${AUDIO}/schi_fueren.mp3`}
+  { id:'et_ass_kal',           word:'Et ass kal',               img:'https://i.postimg.cc/dkjvL74X/et-ass-kal.png',                 audio:`${AUDIO}/et_ass_kal.mp3` },
+  { id:'reen',                 word:'Reen',                     img:'https://i.postimg.cc/06m91XS0/reen.png',                       audio:`${AUDIO}/reen.mp3` },
+  { id:'schlittschung',        word:'Schlittschung',            img:'https://i.postimg.cc/Lhm2GTsF/schlittschung.png',              audio:`${AUDIO}/schlittschung.mp3` },
+  { id:'schlittschung_fueren', word:'Schlittschung fueren',     img:'https://i.postimg.cc/sGfzSVNK/schlittschung-fueren.png',       audio:`${AUDIO}/schlittschung%20fueren.mp3` },
+  { id:'schlitt',              word:'Schlitt',                  img:'https://i.postimg.cc/MMmxvcds/schlitt.png',                    audio:`${AUDIO}/schlitt.mp3` },
+  { id:'schlitt_fueren',       word:'Schlitt fueren',           img:'https://i.postimg.cc/wRxzJ6GW/schlitt-fueren.png',             audio:`${AUDIO}/schlitt_fueren.mp3` },
+  { id:'schnei',               word:'Schnéi',                   img:'https://i.postimg.cc/5jfbD32K/schnei.png',                     audio:`${AUDIO}/schn%C3%A9i.mp3` },
+  { id:'schneiflack',          word:'Schnéiflack',              img:'https://i.postimg.cc/w3FgzmtK/schneiflack.png',                audio:`${AUDIO}/schn%C3%A9iflack.mp3` },
+  { id:'schneimaennchen',      word:'Schnéimännchen',           img:'https://i.postimg.cc/w3Fgzmt8/schneimannchen.png',             audio:`${AUDIO}/schn%C3%A9im%C3%A4nnchen.mp3` },
+  { id:'schneimaennchen_bauen',word:'Schnéimännchen bauen',     img:'https://i.postimg.cc/mPPb8ggc/e-schneimannche-bauen.png',      audio:`${AUDIO}/schn%C3%A9im%C3%A4nnchen%20bauen.mp3` },
+  { id:'schi',                 word:'Schi',                     img:'https://i.postimg.cc/FfchXCS0/schi.png',                       audio:`${AUDIO}/schi.mp3` },
+  { id:'schi_fueren',          word:'Schi fueren',              img:'https://i.postimg.cc/QB5jZY53/schi-fueren.png',                audio:`${AUDIO}/schi_fueren.mp3` }
 ];
 
-function shuffle(a){return a.sort(()=>Math.random()-.5);}
-const speaker=document.getElementById('speaker');
-
-/* NAV */
-const pages=['g1','g2','g3','g4'];
-let page=0;
-function show(i){
-  page=i;
-  pages.forEach((p,idx)=>document.getElementById(p).classList.toggle('hidden',idx!==page));
-  document.getElementById('flowLabel').textContent=`${page+1}. Spill`;
+/* ---------- UTIL ---------- */
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
 }
-document.getElementById('prev').onclick=()=>show(Math.max(0,page-1));
-document.getElementById('next').onclick=()=>show(Math.min(3,page+1));
 
-/* GAME 1 */
-let bag1=shuffle([...ITEMS]);
-let target=null;
-const grid=document.getElementById('grid1');
-ITEMS.forEach(it=>{
-  const b=document.createElement('div');
-  b.className='imgToken';
-  b.innerHTML=`<img src="${it.img}">`;
-  b.onclick=()=>{
-    b.classList.add(it===target?'flash-good':'flash-bad');
-    if(it===target)setTimeout(next1,400);
-  };
-  grid.appendChild(b);
-});
-function next1(){
-  if(!bag1.length)return show(1);
-  target=bag1.pop();
-  speaker.src=target.audio;speaker.play();
+const pages = ["g1","g2","g3","g4"];
+let pageIdx = 0;
+const flowLabel = document.getElementById('flowLabel');
+const prevBtn = document.getElementById('prev');
+const nextBtn = document.getElementById('next');
+
+function labelFor(i){ return `${i+1}. Spill`; }
+function updateNav(){
+  flowLabel.textContent = labelFor(pageIdx);
+  prevBtn.classList.toggle('hidden', pageIdx===0);
+  nextBtn.classList.toggle('hidden', pageIdx===pages.length-1);
 }
-next1();
+function showPage(i){
+  pageIdx = Math.max(0, Math.min(pages.length-1, i));
+  pages.forEach((id,idx)=>document.getElementById(id).classList.toggle('hidden', idx!==pageIdx));
+  updateNav();
+}
+prevBtn.onclick = ()=> showPage(pageIdx-1);
+nextBtn.onclick = ()=> showPage(pageIdx+1);
 
-/* GAME 2 */
-const memGrid=document.getElementById('memGrid');
-const memItems=shuffle(ITEMS.slice(0,8));
-let cards=[];
-memItems.forEach(it=>{
-  cards.push({t:'img',it},{t:'snd',it});
+function autoAdvance(delay=900){
+  setTimeout(()=>{
+    if(pageIdx < pages.length-1) showPage(pageIdx+1);
+  }, delay);
+}
+
+const speaker = document.getElementById('speaker');
+async function playSound(src){
+  try{
+    if(speaker.src !== src) speaker.src = src;
+    await speaker.play();
+  }catch(e){}
+}
+
+function flash(el, ok){
+  el.classList.remove('flash-good','flash-bad');
+  void el.offsetWidth;
+  el.classList.add(ok ? 'flash-good' : 'flash-bad');
+  setTimeout(()=> el.classList.remove('flash-good','flash-bad'), 260);
+}
+
+/* ---------- SPILL 1: Listen & click correct image ---------- */
+const grid1 = document.getElementById('grid1');
+const play1 = document.getElementById('play1');
+let bag1 = [];
+let target1 = null;
+
+function layoutG1(){
+  grid1.innerHTML = "";
+  ITEMS.forEach(it=>{
+    const b = document.createElement('button');
+    b.className = 'imgToken';
+    const img = document.createElement('img');
+    img.src = it.img; img.alt = it.word;
+    b.appendChild(img);
+    b.onclick = ()=> checkG1(it, b);
+    grid1.appendChild(b);
+  });
+}
+function nextG1(){
+  if(bag1.length===0){
+    autoAdvance();
+    return;
+  }
+  target1 = bag1.pop();
+  playSound(target1.audio);
+}
+function checkG1(it, el){
+  const ok = (target1 && it.id === target1.id);
+  flash(el, ok);
+  if(ok) setTimeout(nextG1, 280);
+}
+play1.onclick = ()=>{ if(target1) playSound(target1.audio); };
+
+/* ---------- SPILL 2: Memory (image – sound) ---------- */
+const memGrid = document.getElementById('memGrid');
+const memReset = document.getElementById('memReset');
+let lockMem = false; let firstPick = null; let solved = 0;
+
+// choose 8 items for memory
+const MEM_ITEMS = ITEMS.slice(0, 8);
+
+function buildMemory(){
+  memGrid.innerHTML = ""; lockMem = false; firstPick = null; solved = 0;
+  const cards = [];
+  MEM_ITEMS.forEach(it=>{
+    cards.push({type:'img', key:it.id, it});
+    cards.push({type:'snd', key:it.id, it});
+  });
+  shuffle(cards).forEach(card=>{
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.dataset.key = card.key;
+    el.dataset.type = card.type;
+    el.innerHTML = `
+      <div class="inner">
+        <div class="face front"></div>
+        <div class="face back">
+          ${card.type==='img'
+            ? `<img src="${card.it.img}" alt="${card.it.word}" style="width:85%; height:85%; object-fit:contain">`
+            : `<div class="sndWord">${card.it.word}</div>`}
+        </div>
+      </div>`;
+    el.addEventListener('click', ()=> flipMem(el, card));
+    memGrid.appendChild(el);
+  });
+}
+function flipMem(el, card){
+  if(lockMem) return;
+  if(el.classList.contains('flipped')) return;
+
+  el.classList.add('flipped');
+  if(card.type==='snd'){ playSound(card.it.audio); }
+
+  if(!firstPick){ firstPick = el; return; }
+
+  const match = (firstPick.dataset.key === el.dataset.key) &&
+                (firstPick !== el) &&
+                (firstPick.dataset.type !== el.dataset.type);
+  lockMem = true;
+  setTimeout(()=>{
+    if(match){
+      firstPick.style.pointerEvents = 'none';
+      el.style.pointerEvents = 'none';
+      solved += 1;
+      if(solved === MEM_ITEMS.length){ autoAdvance(700); }
+    }else{
+      firstPick.classList.remove('flipped');
+      el.classList.remove('flipped');
+    }
+    firstPick = null; lockMem = false;
+  }, 650);
+}
+memReset.onclick = buildMemory;
+
+/* ---------- SPILL 3: Random big square ---------- */
+const bigSq = document.getElementById('bigSq');
+const bigImg = document.getElementById('bigImg');
+const bigReset = document.getElementById('bigReset');
+const sayPlay = document.getElementById('sayPlay');
+let bag3 = [];
+
+function refill3(){ bag3 = shuffle([...ITEMS]); }
+function next3(){
+  if(bag3.length===0){
+    autoAdvance();
+    return;
+  }
+  const it = bag3.pop();
+  bigImg.src = it.img; bigImg.alt = it.word;
+  bigImg.classList.remove('fade'); void bigImg.offsetWidth; bigImg.classList.add('fade');
+  bigSq.dataset.current = it.id;
+}
+function reset3(){
+  refill3();
+  bigImg.src = ''; bigImg.alt = '';
+  bigSq.dataset.current = '';
+}
+bigSq.addEventListener('click', (e)=>{
+  if(e.target===bigReset) return;
+  next3();
 });
-shuffle(cards).forEach(c=>{
-  const card=document.createElement('div');
-  card.className='card';
-  card.innerHTML=`
-  <div class="inner">
-    <div class="face"></div>
-    <div class="face back">${c.t==='img'?`<img src="${c.it.img}" style="width:80%">`:`${c.it.word}`}</div>
-  </div>`;
-  card.onclick=()=>{
-    card.classList.toggle('flipped');
-    if(c.t==='snd'){speaker.src=c.it.audio;speaker.play();}
-  };
-  memGrid.appendChild(card);
+bigReset.addEventListener('click', (e)=>{
+  e.stopPropagation();
+  reset3();
+});
+sayPlay.addEventListener('click', ()=>{
+  const it = ITEMS.find(x=> x.id === bigSq.dataset.current);
+  if(it) playSound(it.audio);
 });
 
-/* GAME 3 */
-let bag3=shuffle([...ITEMS]);
-document.getElementById('bigSq').onclick=()=>{
-  if(!bag3.length)return show(3);
-  const it=bag3.pop();
-  bigImg.src=it.img;
-  speaker.src=it.audio;speaker.play();
-};
+/* ---------- SPILL 4: Dat ass … ---------- */
+const nounSq = document.getElementById('nounSq');
+const nounImg = document.getElementById('nounImg');
+let bag4 = [];
+let currentNoun = null;
 
-/* GAME 4 */
-let bag4=shuffle([...ITEMS]);
-document.getElementById('nounSq').onclick=()=>{
-  if(!bag4.length)return;
-  const it=bag4.pop();
-  nounImg.src=it.img;
-  speaker.src=it.audio;speaker.play();
-};
+function refill4(){ bag4 = shuffle([...ITEMS]); }
+function showNextNoun(){
+  if(bag4.length===0){
+    // last page, don't auto-advance further
+    return;
+  }
+  currentNoun = bag4.pop();
+  nounImg.src = currentNoun.img;
+  nounImg.alt = currentNoun.word;
+  nounImg.classList.remove('fade'); void nounImg.offsetWidth; nounImg.classList.add('fade');
+}
+nounSq.addEventListener('click', ()=>{
+  if(!currentNoun){
+    showNextNoun();
+    return;
+  }
+  playSound(currentNoun.audio);
+  setTimeout(showNextNoun, 900);
+});
 
-show(0);
+/* ---------- INIT ---------- */
+function init(){
+  // Spill 1
+  layoutG1();
+  bag1 = shuffle([...ITEMS]);
+  nextG1();
+
+  // Spill 2
+  buildMemory();
+
+  // Spill 3
+  reset3();
+
+  // Spill 4
+  refill4();
+
+  showPage(0);
+}
+init();
 </script>
 </body>
 </html>
